@@ -8,21 +8,17 @@ const table = document.querySelector('.field');
 
 function updateButtonsState() {
   const rowsCount = table.rows.length;
-  const columnsCount = table.rows[0].cells.length;
+  const columnsCount = rowsCount > 0 ? table.rows[0].cells.length : 0;
 
   appendRow.disabled = rowsCount >= 10;
-  removeRow.disabled = rowsCount <= 2;
-  appendColumn.disabled = columnsCount >= 10;
-  removeColumn.disabled = columnsCount <= 2;
+  removeRow.disabled = rowsCount <= 2 || rowsCount === 0;
+  appendColumn.disabled = columnsCount >= 10 || rowsCount === 0;
+  removeColumn.disabled = columnsCount <= 2 || rowsCount === 0;
 }
 
 appendRow.addEventListener('click', () => {
-  if (table.rows.length === 0) {
-    return;
-  }
-
   if (table.rows.length < 10) {
-    const columnCount = table.rows[0].cells.length;
+    const columnCount = (table.rows.length && table.rows[0].cells.length) || 0;
     const newRow = table.insertRow();
 
     for (let i = 0; i < columnCount; i++) {
@@ -42,6 +38,10 @@ removeRow.addEventListener('click', () => {
 });
 
 appendColumn.addEventListener('click', () => {
+  if (table.rows.length === 0) {
+    return;
+  }
+
   const columnsCount = table.rows[0].cells.length;
 
   if (columnsCount < 10) {
@@ -54,11 +54,15 @@ appendColumn.addEventListener('click', () => {
 });
 
 removeColumn.addEventListener('click', () => {
+  if (table.rows.length === 0) {
+    return;
+  }
+
   const columnsCount = table.rows[0].cells.length;
 
   if (columnsCount > 2) {
     for (const row of table.rows) {
-      row.deleteCell(table.cells.length - 1);
+      row.deleteCell(row.cells.length - 1);
     }
   }
 
