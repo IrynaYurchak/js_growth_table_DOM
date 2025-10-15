@@ -11,17 +11,20 @@ function updateButtonsState() {
   const columnsCount = rowsCount > 0 ? table.rows[0].cells.length : 0;
 
   appendRow.disabled = rowsCount >= 10;
-  removeRow.disabled = rowsCount <= 2 || rowsCount === 0;
-  appendColumn.disabled = columnsCount >= 10 || rowsCount === 0;
-  removeColumn.disabled = columnsCount <= 2 || rowsCount === 0;
+  removeRow.disabled = rowsCount <= 2;
+  appendColumn.disabled = rowsCount === 0 || columnsCount >= 10;
+  removeColumn.disabled = rowsCount === 0 || columnsCount <= 2;
 }
 
 appendRow.addEventListener('click', () => {
-  if (table.rows.length < 10) {
-    const columnCount = (table.rows.length && table.rows[0].cells.length) || 0;
+  const rowsCount = table.rows.length;
+
+  const columnsCount = rowsCount > 0 ? table.rows[0].cells.length : 2;
+
+  if (rowsCount < 10) {
     const newRow = table.insertRow();
 
-    for (let i = 0; i < columnCount; i++) {
+    for (let i = 0; i < columnsCount; i++) {
       newRow.insertCell();
     }
   }
@@ -30,15 +33,21 @@ appendRow.addEventListener('click', () => {
 });
 
 removeRow.addEventListener('click', () => {
-  if (table.rows.length > 2) {
-    table.deleteRow(table.rows.length - 1);
+  const rowsCount = table.rows.length;
+
+  if (rowsCount > 2) {
+    table.deleteRow(rowsCount - 1);
   }
 
   updateButtonsState();
 });
 
 appendColumn.addEventListener('click', () => {
-  if (table.rows.length === 0) {
+  const rowsCount = table.rows.length;
+
+  if (rowsCount === 0) {
+    updateButtonsState();
+
     return;
   }
 
@@ -54,7 +63,11 @@ appendColumn.addEventListener('click', () => {
 });
 
 removeColumn.addEventListener('click', () => {
-  if (table.rows.length === 0) {
+  const rowsCount = table.rows.length;
+
+  if (rowsCount === 0) {
+    updateButtonsState();
+
     return;
   }
 
